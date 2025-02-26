@@ -29,6 +29,7 @@ public class Index {
     static Map<String, List<Event>> events = new HashMap<>();
     static Scanner scan = new Scanner(System.in);
     static String useId; // 사용자 ID 변수
+    static final String FILE_NAME = "events.ser"; // 모든 데이터 저장
 
     public static void main(String[] args) {
         System.out.println("사용자 아이디를 입력하세요: ");
@@ -106,9 +107,8 @@ public class Index {
 		int firstWeek = cal.get(Calendar.DAY_OF_WEEK); //첫번째 날의 요일
 		int lastday = cal.getActualMaximum(Calendar.DATE); //입력한년월의 마지막일자
 		System.out.printf("\t %d년 %d월 \t\n", year, mon);
-		System.out.printf("%-5s %-5s %-5s %-5s %-5s %-5s %-5s", "Sun","Mon", "Tue", "Wed", "Tue", "Fri", "Sat");
+		System.out.printf("%-5s %-5s %-5s %-5s %-5s %-5s %-5s", "Sun","Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
 		System.out.println();
-		
 		
 		//1부터 lastday 까지 반복
 		for(int i=1,day=1;day<=lastday;i++) {
@@ -121,13 +121,9 @@ public class Index {
 			
 			if(i%7==0) {
 				System.out.println();
-			}else {
-				
 			}
 		}
 		System.out.println();
-
-    	
     }
 
     // 3. 이벤트 조회
@@ -136,6 +132,11 @@ public class Index {
         String searchDate = scan.nextLine();
         
         List<Event> userDate = events.get(useId);
+        if (userDate == null) {
+            System.out.println("등록된 이벤트가 없습니다.");
+            return;
+        }
+        
         List<Event> result = new ArrayList<>(); // 일치하는 일자의 evnet 리스트
         
         for(Event event : userDate) {
@@ -163,7 +164,7 @@ public class Index {
     // 이벤트 저장 (파일 직렬화)
     private static void saveEvents() {
     	// ObjectOutputStream : 객체를 직렬화 하여 String > byte 형식으로 변환해서 파일에 저장(FileOutputStream)
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(useId + ".ser"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
         	oos.writeObject(events); // 이벤트 정보를 파일에 저장
         } catch (IOException e) {
             e.printStackTrace();
@@ -172,7 +173,7 @@ public class Index {
 
     // 이밴트 불러오기 (파일 역직렬화)
     private static void loadEvents() {
-        File file = new File(useId + ".ser");
+        File file = new File(FILE_NAME);
         // exists() : 존재여부
         if (!file.exists()) return;
 
