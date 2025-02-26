@@ -3,6 +3,7 @@ package building;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 class Event{
 	String eventname;
@@ -32,10 +34,10 @@ class Event{
 	}
 }
 public class CreateMap {
-	static Map<String, Event> manager = new HashMap<>();
+	static Map<String, List<Event>> manager = new HashMap<>();
 	static String userid;
-	static boolean isEvent;
-public static void main(String[] args) throws IOException {
+	static int event_cnt = 0;
+public static void main(String[] args) throws IOException, ParseException {
 		Scanner scan = new Scanner(System.in);
 		System.out.print("사용자 아이디를 입력하세요 >>");
 		userid = scan.next();
@@ -55,7 +57,7 @@ public static void main(String[] args) throws IOException {
 				case 4 : findEvent(); break;
 				case 5 : changeEvent(); break;
 				case 6 : deleteEvent(); break;
-				default : System.out.println("잘못된 입력입니다. 1, 2, 3, 4, 5, 6 숫자만 가능합니다.");
+				default : System.out.println("잘못된 입력입니다. 1,2,3,4,5,6 숫자만 가능합니다.");
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("1,2,3,4,5,6 숫자만 가능합니다.");
@@ -90,9 +92,11 @@ public static void main(String[] args) throws IOException {
 		String details = scan.next();
 		Event event =new Event(eventname, details, start, end);
 		System.out.println(event);
-		manager.put(userid, event);
-		System.out.println(manager.values());
-		isEvent = true;
+		List<Event> list = new ArrayList<>();
+		list.add(event);
+		manager.put(userid, list);
+		System.out.println(manager.get(userid).get(event_cnt));
+		event_cnt++;
 	}
 
 	private static void findcal() throws IOException, ParseException {
@@ -101,29 +105,38 @@ public static void main(String[] args) throws IOException {
 		int year = scan.nextInt();
 		System.out.print("월을 입력하세요 =>");
 		int mon = scan.nextInt();
-		String sday = manager.get(userid).feventdate;
+		String sday = manager.get(userid).get(event_cnt-1).feventdate;
 		Date startday = null;
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		startday = sf.parse(sday);
+		System.out.println(startday); // 시작날짜를 Date 형 자료로 변환
 		Calendar cal = Calendar.getInstance();
 		cal.set(year,mon-1,1);
 		int firstWeek = cal.get(Calendar.DAY_OF_WEEK);
-		//입력한년월의 마지막일자
 		int lastday = cal.getActualMaximum(Calendar.DATE);
-		System.out.println("\t"+year + "년 " + mon + "월");
-		System.out.printf("%3c %3c %3c%3c %3c%3c %3c",'일','월','화','수','목','금','토');
-		System.out.println();
-		int cnt = 0;
-		for(int i=1,day=1;day<=lastday;i++) {
-			if(i < firstWeek) System.out.printf("%4s"," ");
-			if(isEvent && ) {
-				System.out.print("("+ ++cnt +")");
-			}
-			else System.out.printf("%4d",day++);
-			if(i%7==0)System.out.println();
-		}
-		System.out.println();
-		
-	}
+		cal.setTime(startday); // 이벤트 날짜를 Cal 형으로 변환
+		FileOutputStream fos = new FileOutputStream(userid+".txt"); //userid.txt 스트림 오픈
+		PrintStream ps = new PrintStream(fos); // 프린트 스트림 오픈
+	    System.out.printf("\n\t\t%4d년 %2d월\n", year, mon);
+	    System.out.println("============================================");
+	    System.out.printf("%-6s %-6s %-6s %-6s %-6s %-6s %-6s\n", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+	    System.out.println("============================================");
 
+	    // 날짜 출력
+	    for (int i = 1, day = 1; day <= lastday; i++) {
+	        if (i < firstWeek) {
+	            System.out.printf("%-7s", ""); // 빈칸 출력 (한 칸당 7자리)
+	        } else {
+	            if (cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) == mon - 1 && cal.get(Calendar.DATE) == day) {
+	                System.out.printf("%d(%d)%-2s", day++, event_cnt,""); // 일정 있는 날짜
+	            } else {
+	                System.out.printf("%-7d", day++); // 일반 날짜
+	            }
+	        }
+	        if (i % 7 == 0) System.out.println(); // 한 줄(일주일) 출력 후 줄바꿈
+	    }
+	    System.out.println("\n============================================");
+	}
+	
 }
+
