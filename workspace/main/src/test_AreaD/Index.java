@@ -1,4 +1,4 @@
-package real;
+package test_AreaD;
 
 import java.io.*;
 import java.util.*;
@@ -94,20 +94,68 @@ public class Index {
     }
 
     // 2. 달력 조회 
-    private static void calendar() {}
+    private static void calendar() {
+		System.out.print("조회할 달력의 년도를 입력하시오: ");
+		int year = scan.nextInt();
+		System.out.print("조회할 달력의 월을 입력하시오: ");
+		int mon = scan.nextInt();
+		
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(year,mon-1,1); //입력한 년월의 첫째날 설정
+		int firstWeek = cal.get(Calendar.DAY_OF_WEEK); //첫번째 날의 요일
+		int lastday = cal.getActualMaximum(Calendar.DATE); //입력한년월의 마지막일자
+		System.out.printf("\t %d년 %d월 \t\n", year, mon);
+		System.out.printf("%-5s %-5s %-5s %-5s %-5s %-5s %-5s", "Sun","Mon", "Tue", "Wed", "Tue", "Fri", "Sat");
+		System.out.println();
+		
+		
+		//1부터 lastday 까지 반복
+		for(int i=1,day=1;day<=lastday;i++) {
+			//공백출력 : 첫째날의 요일 이전 부분
+			if(i < firstWeek) {
+				System.out.printf("%-6s"," ");
+			} else {
+				System.out.printf("%-6d",day++);
+			} 
+			
+			if(i%7==0) {
+				System.out.println();
+			}else {
+				
+			}
+		}
+		System.out.println();
+
+    	
+    }
 
     // 3. 이벤트 조회
     private static void event_search() {
         System.out.print("조회할 일자 입력 (yyyy/MM/dd): ");
         String searchDate = scan.nextLine();
         
-
+        List<Event> userDate = events.get(useId);
+        List<Event> result = new ArrayList<>(); // 일치하는 일자의 evnet 리스트
         
-       
+        for(Event event : userDate) {
+        	// startsWith() : 시작문자 , 2025/02/26 10:00:00
+        	if(event.feventdate.startsWith(searchDate)) {
+        		result.add(event);
+        	}
+        }
+        
+        if(result.isEmpty()) {
+        	System.out.println("등록된 이벤트가 없습니다.");
+        } else {
+        	// sort .comparing : 첫째날 내림차순
+        	result.sort(Comparator.comparing(e -> e.feventdate));
+        	// for 문 안돌리면 [ ], [ ] 형식으로 표출
+        	for(Event event : result ) {
+        		System.out.println(event);
+        	}
+		}
     }
-
-    // 4. 달력 출력 
-    private static void printCalendar() {}
     
     // 5. 삭제
     private static void event_delete() {}
