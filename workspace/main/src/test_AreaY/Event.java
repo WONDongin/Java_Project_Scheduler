@@ -1,3 +1,5 @@
+package java_teamprojectY;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -13,8 +15,8 @@ class Event implements Comparable<Event>{
 		this.leventdate = leventdate;
 	}
 	public String toString() {
-		return "[제목]: " + eventname + "\n" + "[기간]: " + feventdate + "~" 
-	            + leventdate + "\n[상세]: " + content + "\n";		
+		return "[제목] : " + eventname + "\n" + "[기간] : " + feventdate + "~" 
+	            + leventdate + "\n[상세] : " + content + "\n";		
 	}
 	public int compareTo(Event e){
 		//비교를 위해 입력받은 날짜를 정수형 변환
