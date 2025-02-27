@@ -1,9 +1,10 @@
 package java_teamprojectY;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-class Event implements Comparable<Event>{
+class Event implements Comparable<Event>, Serializable{
 	String eventname;
 	String content;
 	String feventdate;

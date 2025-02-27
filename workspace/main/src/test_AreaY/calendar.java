@@ -33,6 +33,8 @@ public static void main(String[] args) throws IOException, ParseException, Class
 		userid = scan.next();
 		manager.put(userid, null);
 		int menu;
+		loadEvents();
+		
 		while(true) {
 			try {
 				System.out.println("메뉴번호를 선택하시오(1:종료, 2:달력조회, 3:이벤트추가, 4:이벤트조회, 5:이벤트변경, 6:이벤트삭제");
@@ -42,7 +44,7 @@ public static void main(String[] args) throws IOException, ParseException, Class
 					break;
 				}
 				switch(menu) {
-				case 2 : findcal(); break;
+				case 2 : findcal(); saveEvents(); break;
 				case 3 : addEvent(); break;
 				case 4 : findEvent(); break;
 				case 5 : changeEvent(); break;
@@ -87,6 +89,7 @@ public static void main(String[] args) throws IOException, ParseException, Class
                 System.out.println(event);
             }
         }
+		saveEvents();
 	}
 
 	private static void findcal() throws IOException, ParseException {
@@ -114,8 +117,7 @@ public static void main(String[] args) throws IOException, ParseException, Class
 		cal.set(year,mon-1,1);
 		int firstWeek = cal.get(Calendar.DAY_OF_WEEK);
 		int lastday = cal.getActualMaximum(Calendar.DATE);
-		FileOutputStream fos = new FileOutputStream(userid+".txt"); //userid.txt 스트림 오픈
-		PrintStream ps = new PrintStream(fos); // 프린트 스트림 오픈
+
 	    System.out.printf("\n\t\t%4d년 %2d월\n", year, mon);
 	    System.out.println("============================================");
 	    System.out.printf("%-6s %-6s %-6s %-6s %-6s %-6s %-6s\n", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
