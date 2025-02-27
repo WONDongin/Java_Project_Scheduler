@@ -87,8 +87,9 @@ public static void main(String[] args) throws IOException, ParseException, Class
 			if(deleteyn.equalsIgnoreCase("y")) {
 				int number = list.indexOf(deletelist.get(deleteno-1));
 				System.out.println(number);
-				list.remove(1);
-				loadEvents();
+				list.remove(number);
+				manager.put(userid, list);
+				saveEvents();
 				System.out.println("이벤트 삭제 저장 완료");
 				break;
 			}else {
