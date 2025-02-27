@@ -30,11 +30,14 @@ public class calendar {
 public static void main(String[] args) throws IOException, ParseException, ClassNotFoundException {
 		Scanner scan = new Scanner(System.in);
 		System.out.print("사용자 아이디를 입력하세요 >>");
-		userid = scan.next();
-		manager.put(userid, null);
-		int menu;
+		userid = scan.nextLine();
 		loadEvents();
-		
+		int menu;
+		if(manager.containsKey(userid)) {
+			list = manager.get(userid);
+		} else {
+			manager.put(userid, list);
+		}
 		while(true) {
 			try {
 				System.out.println("메뉴번호를 선택하시오(1:종료, 2:달력조회, 3:이벤트추가, 4:이벤트조회, 5:이벤트변경, 6:이벤트삭제");
@@ -53,7 +56,7 @@ public static void main(String[] args) throws IOException, ParseException, Class
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("1,2,3,4,5,6 숫자만 가능합니다.");
-				scan.next();
+				scan.nextLine();
 			}
 		}
 		
@@ -68,12 +71,12 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	}
 
 	private static void findEvent() {
-		Calendar evetY = Calendar.getInstance();
-		Calendar evetM = Calendar.getInstance();
+
 	}
 
 	private static void addEvent() throws FileNotFoundException, IOException { //이벤트 추가)
 		System.out.print("이벤트 제목을 입력하세요>>");
+		scan.nextLine();
 		String eventname = scan.nextLine();
 		System.out.print("이벤트 시작 시각을 입력하시오 (yyyy/MM/dd hh:mm:ss)>>");
 		String start = scan.nextLine();
@@ -82,13 +85,13 @@ public static void main(String[] args) throws IOException, ParseException, Class
 		System.out.print("이벤트 세부사항을 입력하시오>>");
 		String details = scan.nextLine();
 		list.add(new Event(eventname, details, start, end));
-		manager.put(userid, list);
-		Collections.sort(list,(n1,n2)-> n1.feventdate.compareTo(n2.feventdate));
+		Collections.sort(list);
 		for (List<Event> events : manager.values()) {
             for (Event event : events) {
                 System.out.println(event);
             }
         }
+		manager.put(userid, list);
 		saveEvents();
 	}
 
@@ -140,6 +143,7 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	        if (i % 7 == 0) System.out.println(); // 한 줄(일주일) 출력 후 줄바꿈
 	    }
 	    System.out.println("\n============================================");
+	    
 	}
 
 	private static void setTime(Date d) {

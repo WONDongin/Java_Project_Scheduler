@@ -22,10 +22,11 @@ class Event implements Comparable<Event>, Serializable{
 	public int compareTo(Event e){
 		//비교를 위해 입력받은 날짜를 정수형 변환
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			try {
-				return sf.parse(feventdate).compareTo(sf.parse(leventdate));
-			} catch (ParseException e1) {
-				return 0;
-			}
+		try {
+			return sf.parse(this.feventdate).compareTo(sf.parse(e.feventdate));
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+			return 0;
+		}
 	}
 }
