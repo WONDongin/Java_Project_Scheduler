@@ -63,7 +63,39 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	}
 
 	private static void deleteEvent() {
-		System.out.println("삭제할 이벤트 날짜를 입력하세요");
+		System.out.println("삭제할 이벤트 날짜를 입력하세요(yyyy/MM/dd)>>");
+		String deleteDate = scan.nextLine();
+		ArrayList<Event> deletelist = new ArrayList<Event>();
+		int num = 1;
+		for (List<Event> events : manager.values()) {
+            for (Event event : events) {
+            	if(event.feventdate.startsWith(deleteDate)) {
+            		deletelist.add(event);
+					System.out.print("번호:" + num++ + "=>");
+            		System.out.print(event);
+            	}
+            }
+        }
+		System.out.print("삭제할 번호를 선택하세요");
+		int deleteno = scan.nextInt();
+		scan.nextLine();
+		System.out.println("삭제내용확인:");
+		deletelist.get(deleteno-1);
+		System.out.print("삭제할 이벤트가 맞습니까? 삭제하려면 Y를 입력하세요");
+		while (true) {
+			String deleteyn = scan.nextLine();
+			if(deleteyn.equalsIgnoreCase("y")) {
+				int number = list.indexOf(deletelist.get(deleteno-1));
+				System.out.println(number);
+				list.remove(1);
+				loadEvents();
+				System.out.println("이벤트 삭제 저장 완료");
+				break;
+			}else {
+				System.out.println();
+				break;
+			}
+		}
 	}
 
 	private static void changeEvent() {
@@ -71,12 +103,20 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	}
 
 	private static void findEvent() {
-
+	
+		System.out.println("조회할 이벤트 날짜를 입력하세요(yyyy/MM/dd)>>");
+		String searchDate = scan.nextLine();
+		for (List<Event> events : manager.values()) {
+            for (Event event : events) {
+            	if(event.feventdate.startsWith(searchDate)) {
+            		System.out.print(event);
+            	}
+            }
+        }
 	}
 
 	private static void addEvent() throws FileNotFoundException, IOException { //이벤트 추가)
 		System.out.print("이벤트 제목을 입력하세요>>");
-		scan.nextLine();
 		String eventname = scan.nextLine();
 		System.out.print("이벤트 시작 시각을 입력하시오 (yyyy/MM/dd hh:mm:ss)>>");
 		String start = scan.nextLine();
@@ -86,11 +126,6 @@ public static void main(String[] args) throws IOException, ParseException, Class
 		String details = scan.nextLine();
 		list.add(new Event(eventname, details, start, end));
 		Collections.sort(list);
-		for (List<Event> events : manager.values()) {
-            for (Event event : events) {
-                System.out.println(event);
-            }
-        }
 		manager.put(userid, list);
 		saveEvents();
 	}
@@ -102,6 +137,7 @@ public static void main(String[] args) throws IOException, ParseException, Class
 		int year = scan.nextInt();
 		System.out.print("월을 입력하세요 =>");
 		int mon = scan.nextInt();
+		scan.nextLine();
 		Calendar cal = Calendar.getInstance();
 
 		for (Event l : list) {
@@ -116,7 +152,6 @@ public static void main(String[] args) throws IOException, ParseException, Class
 			}
         }
 		
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		cal.set(year,mon-1,1);
 		int firstWeek = cal.get(Calendar.DAY_OF_WEEK);
 		int lastday = cal.getActualMaximum(Calendar.DATE);
