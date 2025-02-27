@@ -100,7 +100,49 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	}
 
 	private static void changeEvent() {
-		
+		System.out.print("변경할 이벤트 날짜를 입력하시오(yyyy/MM/dd)>>");
+		String d = scan.nextLine();
+		List<Event> userDate = manager.get(userid);
+		List<Event> result = new ArrayList<>();
+		int j = 1;
+		for(int i=0; i<userDate.size();i++) {
+			if(userDate.get(i).feventdate.startsWith(d)) {
+			System.out.println("번호:"+ j +"=>"+userDate.get(i));
+			result.add(userDate.get(i));
+			j++;
+			}
+		}
+		System.out.print("수정할 번호를 선택하세요:");
+		int num = scan.nextInt();
+		System.out.println("수정내용확인:");
+		System.out.println(result.get(num-1));
+		System.out.print("변경할 이벤트가 맞습니까? 변경 하실려면 Y를 입력하세요:");
+		String yn = scan.next();
+		scan.nextLine();
+		if(yn.equalsIgnoreCase("Y")) {
+			userDate.remove(result.get(num-1)); //선택한 이벤트 삭제
+			
+			System.out.print("새 이벤트 제목을 입력하세요: ");
+	        String e_name = scan.nextLine();
+	        result.get(num - 1).eventname = e_name;
+
+	        System.out.print("새 시작 날짜를 입력하세요 (yyyy/MM/dd HH:mm:ss): ");
+	        String sd = scan.nextLine();
+	        result.get(num - 1).feventdate = sd;
+
+	        System.out.print("새 종료 날짜를 입력하세요 (yyyy/MM/dd HH:mm:ss): ");
+	        String ed = scan.nextLine();
+	        result.get(num - 1).leventdate = ed;
+
+	        System.out.print("새 이벤트 세부사항을 입력하세요: ");
+	        String dtl = scan.nextLine();
+	        result.get(num - 1).content = dtl;
+
+	        list.add(result.get(num - 1)); // 변경된 이벤트 다시 추가
+	        Collections.sort(list);
+	        manager.put(userid, list); // 업데이트된 리스트 저장
+	        System.out.println("이벤트 변경 저장 완료!");
+		}
 	}
 
 	private static void findEvent() {
@@ -133,13 +175,23 @@ public static void main(String[] args) throws IOException, ParseException, Class
 
 	private static void findcal() throws IOException, ParseException {
 		int[] cntd = new int[31];
-		
-		System.out.print("년도를 입력하세요 =>");
-		int year = scan.nextInt();
-		System.out.print("월을 입력하세요 =>");
-		int mon = scan.nextInt();
-		scan.nextLine();
+		int year, mon;
 		Calendar cal = Calendar.getInstance();
+		while(true) {
+			try {
+				System.out.print("년도를 입력하세요 =>");
+				year = scan.nextInt();
+				System.out.print("월을 입력하세요 =>");
+				mon = scan.nextInt();
+				System.out.println("dd");
+				scan.nextLine();
+				break;
+				
+			} catch (InputMismatchException e) {
+				System.out.println("숫자만 가능합니다.");
+				scan.nextLine();
+			}
+		}
 
 		for (Event l : list) {
 			Date d = sf.parse(l.feventdate);
@@ -180,11 +232,6 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	    }
 	    System.out.println("\n============================================");
 	    
-	}
-
-	private static void setTime(Date d) {
-		// TODO Auto-generated method stub
-		
 	}
 	private static void saveEvents() {
 		// ObjectOutputStream : 객체를 직렬화 하여 String > byte 형식으로 변환해서 파일에
