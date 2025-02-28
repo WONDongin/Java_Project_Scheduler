@@ -63,8 +63,19 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	}
 
 	private static void deleteEvent() {
-		System.out.println("삭제할 이벤트 날짜를 입력하세요(yyyy/MM/dd)>>");
-		String deleteDate = scan.nextLine();
+		String deleteDate;
+		while (true) {
+			try {
+				System.out.println("삭제할 이벤트 날짜를 입력하세요(yyyy/MM/dd)>>");
+				deleteDate = scan.nextLine();
+				sf.parse(deleteDate);
+				break;
+				
+			} catch (ParseException e) {
+				System.out.println("(yyyy/MM/dd hh:mm:ss) 형식으로 입력해주세요");
+				continue;
+			}
+		}
 		ArrayList<Event> deletelist = new ArrayList<Event>();
 		int num = 1;
 		for (List<Event> events : manager.values()) {
@@ -146,9 +157,21 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	}
 
 	private static void findEvent() {
-	
+		String searchDate;
+		while (true) {
+			try {
+				System.out.println("조회할 이벤트 날짜를 입력하세요(yyyy/MM/dd)>>");
+				searchDate = scan.nextLine();
+				sf.parse(searchDate);
+				break;
+				
+			} catch (ParseException e) {
+				System.out.println("(yyyy/MM/dd hh:mm:ss) 형식으로 입력해주세요");
+				continue;
+			}
+		}
 		System.out.println("조회할 이벤트 날짜를 입력하세요(yyyy/MM/dd)>>");
-		String searchDate = scan.nextLine();
+		searchDate = scan.nextLine();
 		for (List<Event> events : manager.values()) {
             for (Event event : events) {
             	if(event.feventdate.startsWith(searchDate)) {
@@ -158,15 +181,28 @@ public static void main(String[] args) throws IOException, ParseException, Class
         }
 	}
 
-	private static void addEvent() throws FileNotFoundException, IOException { //이벤트 추가)
+	private static void addEvent() throws FileNotFoundException, IOException, ParseException { //이벤트 추가)
 		System.out.print("이벤트 제목을 입력하세요>>");
 		String eventname = scan.nextLine();
-		System.out.print("이벤트 시작 시각을 입력하시오 (yyyy/MM/dd hh:mm:ss)>>");
-		String start = scan.nextLine();
-		System.out.print("이벤트 종료 시각을 입력하시오 (yyyy/MM/dd hh:mm:ss)>>");
-		String end = scan.nextLine();
+		String start, end;
+		while (true) {
+			try {
+				System.out.print("이벤트 시작 시각을 입력하시오 (yyyy/MM/dd hh:mm:ss)>>");
+				start = scan.nextLine();
+				System.out.print("이벤트 종료 시각을 입력하시오 (yyyy/MM/dd hh:mm:ss)>>");
+				end = scan.nextLine();
+				sf.parse(start);
+				sf.parse(end);
+				break;
+				
+			} catch (ParseException e) {
+				System.out.println("(yyyy/MM/dd hh:mm:ss) 형식으로 입력해주세요");
+				continue;
+			}
+		}
 		System.out.print("이벤트 세부사항을 입력하시오>>");
 		String details = scan.nextLine();
+	
 		list.add(new Event(eventname, details, start, end));
 		Collections.sort(list);
 		manager.put(userid, list);
