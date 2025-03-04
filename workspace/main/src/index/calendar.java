@@ -58,7 +58,8 @@ public class calendar {
 	static Scanner scan  = new Scanner(System.in);
 	static SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	static final String FILE_NAME = "events.ser";
-public static void main(String[] args) throws IOException, ParseException, ClassNotFoundException {
+	
+	public static void main(String[] args) throws IOException, ParseException, ClassNotFoundException {
 		Scanner scan = new Scanner(System.in);
 		System.out.print("사용자 아이디를 입력하세요 >>");
 		userid = scan.nextLine();
@@ -214,7 +215,6 @@ public static void main(String[] args) throws IOException, ParseException, Class
 				year = scan.nextInt();
 				System.out.print("월을 입력하세요 =>");
 				mon = scan.nextInt();
-				System.out.println("dd");
 				scan.nextLine();
 				break;
 				
@@ -248,18 +248,17 @@ public static void main(String[] args) throws IOException, ParseException, Class
 	    // 날짜 출력
 	    for (int i = 0, day = 1; day <= lastday; i++) {
 	    	
-	        if (i < firstWeek) {
+	        if (i < firstWeek - 1) {
 	            System.out.printf("%-7s", ""); // 빈칸 출력 (한 칸당 7자리)
 	        } else {
 	            if (cntd[day-1] > 0) {
-	                System.out.printf("%d(%d)%-2s", day, cntd[day-1],""); // 일정 있는 날짜
-	                
+	                System.out.printf("%-7s", String.format("%-2d(%d)%", day, cntd[day-1])); // 일정 있는 날짜
 	            } else {
 	                System.out.printf("%-7d", day); // 일반 날짜
 	            }
 	            day++;
 	        }
-	        if (i % 7 == 0) System.out.println(); // 한 줄(일주일) 출력 후 줄바꿈
+	        if ((i+1) % 7 == 0) System.out.println(); // 한 줄(일주일) 출력 후 줄바꿈
 	    }
 	    System.out.println("\n============================================");
 	    
